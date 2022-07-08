@@ -25,9 +25,8 @@ public class UserRepository extends BaseRepository {
             ResultSet rs = preparedStmt.executeQuery();
 
             rs.next();
-            var username =  rs.getString("username");
             return new UserDM(
-                    UUID.fromString(rs.getString("userId")),
+                    UUID.fromString(rs.getString("ownerId")),
                     UUID.fromString(rs.getString("privateKey")),
                     rs.getString("username"));
         } catch (SQLException e) {

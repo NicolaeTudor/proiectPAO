@@ -1,7 +1,9 @@
 package org.example.Services;
 
+import org.example.DTO.UserCreateReturn;
 import org.example.DataModelAdapter;
 import org.example.Models.User;
+import org.example.Models.UserAuthToken;
 import org.example.Repositories.UserRepository;
 
 import java.util.UUID;
@@ -37,15 +39,23 @@ public final class UserService {
         }
     }
 
-    public User getUser(UUID publicKey) {
+    public User get(UUID publicKey) {
         var dbUser =  _userRepository.Get(publicKey);
 
         return DataModelAdapter.FromUserDM(dbUser);
     }
 
-    public UUID createUser(String username) {
+    public UserCreateReturn create(String username) {
         var dbUser = _userRepository.Create(username);
+        var user = DataModelAdapter.FromUserDM(dbUser);
+        var authorization = new UserAuthToken(dbUser.userId(), dbUser.privateKey());
 
-        return dbUser.userId();
+        return new UserCreateReturn(authorization, user);
+    }
+
+    public boolean checkAuthToken(UserAuthToken userToken) {
+        var user = _userRepository.Get(userToken.publicKey());
+
+        return user.privateKey() == userToken.privateKey();
     }
 }
