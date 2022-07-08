@@ -56,6 +56,6 @@ public final class UserService {
     public boolean checkAuthToken(UserAuthToken userToken) {
         var user = _userRepository.Get(userToken.publicKey());
 
-        return user.privateKey() == userToken.privateKey();
+        return user.privateKey().compareTo(userToken.privateKey()) == 0;
     }
 }

@@ -12,6 +12,7 @@ public abstract class Auction {
         _listing = listing;
         this._minimumStartingBid = minimumStartingBid;
         this._priceFloor = priceFloor;
+        this._winningBid = winningBid;
     }
 
     public abstract void addBid(@NotNull Bid bid);

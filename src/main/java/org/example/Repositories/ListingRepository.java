@@ -31,7 +31,7 @@ public class ListingRepository extends BaseRepository{
             rs.next();
             return new ListingDM(
                     UUID.fromString(rs.getString("listingId")),
-                    UUID.fromString(rs.getString("ownerId")),
+                    UUID.fromString(rs.getString("userId")),
                     rs.getString("title"),
                     rs.getString("description"),
                     ListingStage.fromInteger(rs.getInt("stage")),
@@ -53,12 +53,12 @@ public class ListingRepository extends BaseRepository{
 
             PreparedStatement preparedStmt = conn.prepareStatement(query);
 
-            preparedStmt.setString (1, ownerId.toString());
-            preparedStmt.setString (2, UUID.randomUUID().toString());
+            preparedStmt.setString (1, listingId.toString());
+            preparedStmt.setString (2, ownerId.toString());
             preparedStmt.setString (3, title);
             preparedStmt.setString (4, description);
             preparedStmt.setInt (5, ListingStage.Draft.getValue());
-            preparedStmt.setInt (5, categoryId);
+            preparedStmt.setInt (6, categoryId);
 
             preparedStmt.execute();
 
@@ -76,13 +76,14 @@ public class ListingRepository extends BaseRepository{
                             set
                     """;
 
-            if(ownerId.isPresent()) query += " userId = ?";
-            if(title.isPresent()) query += " title = ?";
-            if(description.isPresent()) query += " description = ?";
-            if(categoryId.isPresent()) query += " categoryId = ?";
-            if(stage.isPresent()) query += " stage = ?";
+            if(ownerId.isPresent()) query += " userId = UUID_TO_BIN(?),";
+            if(title.isPresent()) query += " title = ?,";
+            if(description.isPresent()) query += " description = ?,";
+            if(categoryId.isPresent()) query += " categoryId = ?,";
+            if(stage.isPresent()) query += " stage = ?,";
 
-            query += "where listingId = UUID_TO_BIN(?)";
+            query = query.substring(0, query.length() - 1);
+            query += " where listingId = UUID_TO_BIN(?)";
 
             PreparedStatement preparedStmt = conn.prepareStatement(query);
 

@@ -21,6 +21,8 @@ public class EnglishAuction extends Auction{
     public boolean isNotValidBid(Bid bid) {
         if(super.isNotValidBid(bid)) return true;
 
+        if(this._winningBid == null) return false;
+
         return bid.bidValue() < this._winningBid.bidValue() + minimumRaise;
     }
 }

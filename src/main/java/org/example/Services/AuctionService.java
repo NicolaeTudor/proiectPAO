@@ -52,14 +52,14 @@ public class AuctionService {
         var _listingService = ListingService.getInstance();
         var isValidAuth = _userService.checkAuthToken(userToken);
 
-        if(!isValidAuth) return true;
+        if(!isValidAuth) return false;
 
         var listing = _listingService.get(listingId);
         w_listing.set( _listingService.get(listingId));
 
-        if(listing.ownerId() != userToken.publicKey() || listing.stage() != ListingStage.Draft) return true;
+        if(listing.ownerId() != userToken.publicKey() || listing.stage() != ListingStage.Draft) return false;
 
-        return false;
+        return true;
     }
 
     private void openAuction(@NotNull Auction auction, @NotNull UUID listingId) {
